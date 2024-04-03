@@ -1,0 +1,100 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql> create database IMDB;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| IMDB               |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+mysql> use IMDB;
+Database changed
+
+mysql> CREATE TABLE Movies (     MovieID INT AUTO_INCREMENT PRIMARY KEY,     Title VARCHAR(255) NOT NULL,     ReleaseDate DATE,     Description TEXT );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Media (     MediaID INT AUTO_INCREMENT PRIMARY KEY,     MovieID INT,     MediaType ENUM('Video', 'Image'),     MediaURL VARCHAR(255) NOT NULL,     FOREIGN KEY (MovieID) REFERENCES Movies(MovieID) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Genres (     GenreID INT AUTO_INCREMENT PRIMARY KEY,     Name VARCHAR(100) NOT NULL,     Description TEXT );
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE TABLE MovieGenres (     MovieID INT,     GenreID INT,     PRIMARY KEY (MovieID, GenreID),     FOREIGN KEY (MovieID) REFERENCES Movies(MovieID),     FOREIGN KEY (GenreID) REFERENCES Genres(GenreID) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Users (     UserID INT AUTO_INCREMENT PRIMARY KEY,     Username VARCHAR(100) NOT NULL,     Email VARCHAR(255) NOT NULL,     PasswordHash VARCHAR(255) NOT NULL );
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE TABLE Reviews (     ReviewID INT AUTO_INCREMENT PRIMARY KEY,     MovieID INT,     UserID INT,     Rating DECIMAL(3,1),     Comment TEXT,     ReviewDate DATETIME DEFAULT CURRENT_TIMESTAMP,     FOREIGN KEY (MovieID) REFERENCES Movies(MovieID),     FOREIGN KEY (UserID) REFERENCES Users(UserID) );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> CREATE TABLE Artists (     ArtistID INT AUTO_INCREMENT PRIMARY KEY,     Name VARCHAR(100) NOT NULL,     Bio TEXT,     BirthDate DATE );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Skills (     SkillID INT AUTO_INCREMENT PRIMARY KEY,     Name VARCHAR(100) NOT NULL,     Description TEXT );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE ArtistSkills (     ArtistID INT,     SkillID INT,     PRIMARY KEY (ArtistID, SkillID),     FOREIGN KEY (ArtistID) REFERENCES Artists(ArtistID),     FOREIGN KEY (SkillID) REFERENCES Skills(SkillID) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Roles (     RoleID INT AUTO_INCREMENT PRIMARY KEY,     Name VARCHAR(100) NOT NULL,     Description TEXT );
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CREATE TABLE MovieArtists (     MovieID INT,     ArtistID INT,     RoleID INT,     PRIMARY KEY (MovieID, ArtistID, RoleID),     FOREIGN KEY (MovieID) REFERENCES Movies(MovieID),     FOREIGN KEY (ArtistID) REFERENCES Artists(ArtistID),     FOREIGN KEY (RoleID) REFERENCES Roles(RoleID) );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables;
++----------------+
+| Tables_in_imdb |
++----------------+
+| Artists        |
+| ArtistSkills   |
+| Genres         |
+| Media          |
+| MovieArtists   |
+| MovieGenres    |
+| Movies         |
+| Reviews        |
+| Roles          |
+| Skills         |
+| Users          |
++----------------+
+11 rows in set (0.01 sec)
+
+mysql> describe movies;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| MovieID     | int          | NO   | PRI | NULL    | auto_increment |
+| Title       | varchar(255) | NO   |     | NULL    |                |
+| ReleaseDate | date         | YES  |     | NULL    |                |
+| Description | text         | YES  |     | NULL    |                |
++-------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.01 sec)
+
+mysql> INSERT INTO Movies (Title, ReleaseDate, Description) VALUES ('The Shawshank Redemption', '1994-09-10', 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from movies;
++---------+--------------------------+-------------+------------------------------------------------------------------------------------------------------------------------+
+| MovieID | Title                    | ReleaseDate | Description                                                                                                            |
++---------+--------------------------+-------------+------------------------------------------------------------------------------------------------------------------------+
+|       1 | The Shawshank Redemption | 1994-09-10  | Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency. |
++---------+--------------------------+-------------+------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
